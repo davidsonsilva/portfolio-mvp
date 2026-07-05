@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" fill="none">
+  <!-- Eixo vertical: nasce acima do círculo, atravessa-o, e para antes da base (gap = proporção áurea x diâmetro) -->
+  <line x1="240" y1="83" x2="240" y2="153" stroke="#2B4EFF" stroke-width="4" stroke-linecap="round"/>
+  <!-- Círculo: diâmetro = 1/10 da largura da linha de base -->
+  <circle cx="240" cy="113" r="20" fill="#2B4EFF"/>
+  <!-- Linha de base: largura = 10x diâmetro do círculo, espessura = 1/10 do diâmetro -->
+  <line x1="40" y1="220" x2="440" y2="220" stroke="#2B4EFF" stroke-width="4" stroke-linecap="round"/>
+</svg>

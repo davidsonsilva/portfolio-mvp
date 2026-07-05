@@ -1,0 +1,359 @@
+/* About */
+.about-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.about-flow .step {
+  padding: 8px 16px;
+  border: 1px solid var(--brand-border-silver);
+  border-radius: 100px;
+  background: var(--brand-surface);
+}
+
+.about-flow .arrow {
+  color: var(--brand-accent-axiom);
+}
+
+/* Stack */
+.stack-category h3 {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--brand-fg-graphite);
+  margin-bottom: 14px;
+}
+
+.stack-category .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Experience timeline */
+.experience-item {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 24px;
+  padding: 28px 0;
+  border-top: 1px solid var(--brand-border-silver);
+}
+
+.experience-item:first-child {
+  border-top: none;
+}
+
+.experience-item .period {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--brand-accent-axiom);
+}
+
+.experience-item h3 {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.experience-item .company {
+  font-size: 14px;
+  color: var(--brand-fg-graphite);
+  margin-bottom: 10px;
+}
+
+/* Project cards */
+.project-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.project-card .project-thumb {
+  height: 160px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--brand-muted-subtle), var(--brand-surface));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--brand-accent-axiom);
+}
+
+/* thumb como imagem real (screenshot do projeto) */
+.project-card img.project-thumb {
+  width: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.project-card h3 {
+  font-family: var(--font-body);
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.project-card p {
+  font-size: 14px;
+  color: var(--brand-fg-graphite);
+  margin: 0;
+}
+
+.project-card .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.project-card .card-link,
+.article-card .card-link {
+  margin-top: auto;
+  padding-top: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--brand-accent-axiom);
+}
+
+.project-card .card-link:hover,
+.article-card .card-link:hover {
+  text-decoration: underline;
+}
+
+.article-card .card-link {
+  display: block;
+  margin-top: 12px;
+}
+
+/* lista compacta de features dentro de project-card (AI Dev Template) */
+.project-card .feature-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--brand-fg-graphite);
+}
+
+.project-card .feature-list li {
+  margin-bottom: 6px;
+}
+
+/* Chrome extension cards — screenshot da extensão como fundo do card.
+   Imagem em cover ancorada no topo direito (mostra o header da extensão);
+   scrim lateral escuro mantém o texto legível, no mesmo clima das .section-scene. */
+.card.ext-card {
+  position: relative;
+  overflow: hidden;
+  background: #0b0b10;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.ext-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: var(--shot);
+  background-size: cover;
+  background-position: right top;
+  opacity: 0.9;
+}
+
+.ext-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(90deg,
+    rgba(8, 8, 12, 0.96) 0%, rgba(8, 8, 12, 0.9) 45%, rgba(8, 8, 12, 0.6) 75%, rgba(8, 8, 12, 0.3) 100%);
+}
+
+.ext-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+.ext-card h3 { color: #ffffff; }
+.ext-card p { color: rgba(255, 255, 255, 0.74); }
+.ext-card .tag { color: rgba(255, 255, 255, 0.72); border-color: rgba(255, 255, 255, 0.18); }
+.ext-card .card-link { color: #8fa4ff; }
+
+.ext-card.ext-linkedin { --shot: url('../assets/ext-linkedin-cv.webp'); }
+.ext-card.ext-notebooklm { --shot: url('../assets/ext-notebooklm.webp'); }
+
+/* Engineering knowledge grid */
+.engineering-topic h4 {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.engineering-topic ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 14px;
+  color: var(--brand-fg-graphite);
+}
+
+.engineering-topic li {
+  margin-bottom: 4px;
+}
+
+/* Articles */
+.article-card {
+  padding: 20px;
+}
+
+.article-card .eyebrow {
+  margin-bottom: 8px;
+}
+
+.article-card h3 {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Contact */
+.contact-section {
+  background: var(--brand-bg-snow);
+}
+
+/* about: infografico e o conteudo da secao */
+.about-infographic {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 32px;
+  border-radius: var(--radius);
+  border: 1px solid var(--brand-border-silver);
+}
+
+.contact-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.contact-links a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: 1px solid var(--brand-border-silver);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  background: #ffffff;
+  transition: border-color var(--brand-motion-duration-mid) var(--brand-motion-ease-out);
+}
+
+.contact-links a:hover {
+  border-color: var(--brand-accent-axiom);
+  color: var(--brand-accent-axiom);
+}
+
+/* Section alternating background for rhythm */
+.section-alt {
+  background: var(--brand-surface);
+}
+
+/* ---------------------------------------------------------------------------
+   Scene background sections — dark bands using our crystal renders.
+   The scene sits behind a left-weighted scrim so left-aligned copy stays
+   readable; text/list colors flip to a light palette inside these sections.
+   Only used on text/list sections (no white .card) to keep contrast clean.
+--------------------------------------------------------------------------- */
+.section-scene {
+  position: relative;
+  background: #050505;
+  color: #d4d4d8;
+  overflow: hidden;
+}
+.section-scene > .container {
+  position: relative;
+  z-index: 2;
+}
+/* the crystal render */
+.section-scene::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: var(--scene);
+  background-size: cover;
+  background-position: right center;
+  opacity: 0.9;
+}
+/* readability scrim — darker on the left where the copy lives */
+.section-scene::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(90deg,
+    rgba(5,5,5,0.96) 0%, rgba(5,5,5,0.82) 34%, rgba(5,5,5,0.4) 64%, rgba(5,5,5,0.12) 100%);
+}
+
+/* light palette inside scene sections */
+.section-scene .eyebrow { color: #8fa4ff; }
+.section-scene h2,
+.section-scene h3,
+.section-scene h4 { color: #ffffff; }
+.section-scene .section-subtitle { color: rgba(255,255,255,0.62); }
+.section-scene .tag { color: rgba(255,255,255,0.72); border-color: rgba(255,255,255,0.16); }
+
+/* experience list on dark */
+.section-scene .experience-item { border-top-color: rgba(255,255,255,0.12); }
+.section-scene .experience-item .period { color: #8fa4ff; }
+.section-scene .experience-item .company { color: rgba(255,255,255,0.6); }
+
+/* engineering lists on dark */
+.section-scene .engineering-topic ul { color: rgba(255,255,255,0.62); }
+
+/* contact on dark (overrides the light .contact-section) */
+.section-scene.contact-section { background: #050505; }
+.section-scene .contact-links a {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.16);
+  color: #f4f4f5;
+}
+.section-scene .contact-links a:hover {
+  border-color: #8fa4ff;
+  color: #8fa4ff;
+  background: rgba(255,255,255,0.08);
+}
+
+/* per-section scene image */
+.scene-01 { --scene: url('../assets/scene-engineering.webp'); }
+.scene-02 { --scene: url('../assets/scene-experience.webp'); }
+
+/* footer scene: device centralizado na imagem — scrim vertical e copy centrada,
+   em vez do scrim lateral padrão */
+.scene-footer {
+  --scene: url('../assets/scene-footer.webp');
+}
+.scene-footer::after {
+  background: linear-gradient(180deg,
+    rgba(5,5,5,0.94) 0%, rgba(5,5,5,0.6) 34%, rgba(5,5,5,0.16) 68%, rgba(5,5,5,0.5) 100%);
+}
+.scene-footer > .container { text-align: center; }
+.scene-footer .contact-links { justify-content: center; }
+
+/* on small screens: full flat scrim so copy stays readable over the crystal */
+@media (max-width: 860px) {
+  .section-scene::after {
+    background: linear-gradient(180deg, rgba(5,5,5,0.88) 0%, rgba(5,5,5,0.93) 100%);
+  }
+}

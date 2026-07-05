@@ -1,0 +1,150 @@
+/* Hero — rendered assembly sequence (canvas frame player).
+   40 frames (assets/hero-seq-04/) of the crystal assembling from scattered shards.
+   On load the sequence auto-plays 1->40 (assemble). The hero is tall and the
+   inner stage is sticky, so scrolling scrubs the frames 40->1 (dis-assemble)
+   and back. JS drives the canvas; this file is layout + copy only. */
+
+.hero {
+  position: relative;
+  height: 160vh;              /* scroll distance for the scrub */
+  background: #050505;
+  color: #f4f4f5;
+}
+
+/* the pinned viewport stage */
+.hero-sticky {
+  position: sticky;
+  top: 0;
+  height: 86vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+/* full-bleed frame canvas */
+.hero-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* blend the canvas bottom edge into the hero background (stage < viewport) */
+.hero-sticky::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 90px;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, #050505);
+}
+
+/* readability scrim — darkens the left where the copy sits */
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(90deg, rgba(5, 5, 5, 0.92) 0%, rgba(5, 5, 5, 0.72) 34%, rgba(5, 5, 5, 0.2) 62%, transparent 100%);
+}
+
+/* ---------- Copy layer ---------- */
+.hero-scene {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.hero-copy {
+  max-width: 620px;
+  opacity: 0;                 /* JS fades it in after the assembly, out on scroll */
+  transition: opacity 0.5s ease;
+  will-change: opacity;
+}
+
+.hero .container {
+  position: relative;
+}
+
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8fa4ff;
+  margin-bottom: 18px;
+  display: block;
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  color: #ffffff;
+  font-size: 56px;
+  line-height: 1.05;
+  margin-bottom: 20px;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: #8fa4ff;
+}
+
+.hero-roles {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: #c4c4cc;
+  margin-bottom: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.hero-roles span {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 100px;
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.hero-cta {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.hero-cta .btn-primary {
+  background: #ffffff;
+  color: #0a0a0a;
+  border-color: #ffffff;
+}
+
+.hero-cta .btn-primary:hover {
+  background: #d4daff;
+}
+
+.hero-cta .btn-secondary {
+  color: #f4f4f5;
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.hero-cta .btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 860px) {
+  .hero h1 { font-size: 38px; }
+  .hero-scrim {
+    background: linear-gradient(180deg, rgba(5, 5, 5, 0.55) 0%, rgba(5, 5, 5, 0.86) 100%);
+  }
+}
+
+/* ---------- Reduced motion: hold the assembled frame, copy visible ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .hero { height: 86vh; }
+  .hero-copy { opacity: 1; }
+}
