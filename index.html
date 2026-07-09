@@ -74,7 +74,6 @@
   <div class="container">
     <span class="eyebrow">Stack Tecnológica</span>
     <h2 class="section-title">Ferramentas e fundamentos.</h2>
-    <p class="section-subtitle">Organizada por categoria — do mobile à infraestrutura de IA.</p>
 
     <div class="grid grid-3">
       <div class="stack-category">
@@ -218,18 +217,30 @@
     <h2 class="section-title">Projetos relacionados ao Chrome.</h2>
     <div class="grid grid-2">
       <div class="card project-card ext-card ext-notebooklm">
-        <h3>NotebookLM Manager</h3>
-        <p>Sidebar inteligente que adiciona ao NotebookLM funcionalidades que o Google ainda não oferece: visão geral de todos os grupos e fontes, exclusão em massa, detecção automática de duplicatas e navegação instantânea com um clique.</p>
-        <p>Sem coleta de dados e sem servidor — tudo roda localmente no browser.</p>
-        <div class="tags"><span class="tag">Manifest V3</span><span class="tag">Storage API</span><span class="tag">100% local</span></div>
-        <a class="card-link" href="https://chromewebstore.google.com/detail/notebooklm-manager/effanbigogbehgfiikhinpaglijhmkfh" target="_blank" rel="noopener">Ver na Chrome Web Store →</a>
+        <div class="ext-text-col">
+          <h3>NotebookLM Manager</h3>
+          <p>Sidebar inteligente que adiciona ao NotebookLM funcionalidades que o Google ainda não oferece: visão geral de todos os grupos e fontes, exclusão em massa, detecção automática de duplicatas e navegação instantânea com um clique.</p>
+          <p>Sem coleta de dados e sem servidor — tudo roda localmente no browser.</p>
+          <div class="tags"><span class="tag">Manifest V3</span><span class="tag">Storage API</span><span class="tag">100% local</span></div>
+          <a class="card-link" href="https://chromewebstore.google.com/detail/notebooklm-manager/effanbigogbehgfiikhinpaglijhmkfh" target="_blank" rel="noopener">Ver na Chrome Web Store →</a>
+          <div class="luz" aria-hidden="true"></div>
+        </div>
+        <div class="ext-shot-col">
+          <img class="card-shot" src="assets/ext-notebooklm.webp" alt="" loading="lazy">
+        </div>
       </div>
       <div class="card project-card ext-card ext-linkedin">
-        <h3>LinkedIn CV Generator</h3>
-        <p>Transforma o perfil do LinkedIn num currículo profissional otimizado para sistemas ATS. Extração completa via Voyager API, dois templates (Simples e ATS Gold com IA), match % com vagas em tempo real, categorização de skills por IA gratuita e exportação em HTML, PDF e JSON.</p>
-        <p>100% local: nenhum dado sai do navegador. Sem cadastro, sem API key, sem assinatura.</p>
-        <div class="tags"><span class="tag">Voyager API</span><span class="tag">IA</span><span class="tag">ATS</span></div>
-        <a class="card-link" href="https://chromewebstore.google.com/detail/linkedin-cv-generator/jndjcihjnekmaphbpepoddmbpddkfflh" target="_blank" rel="noopener">Ver na Chrome Web Store →</a>
+        <div class="ext-text-col">
+          <h3>LinkedIn CV Generator</h3>
+          <p>Transforma o perfil do LinkedIn num currículo profissional otimizado para sistemas ATS. Extração completa via Voyager API, dois templates (Simples e ATS Gold com IA), match % com vagas em tempo real, categorização de skills por IA gratuita e exportação em HTML, PDF e JSON.</p>
+          <p>100% local: nenhum dado sai do navegador. Sem cadastro, sem API key, sem assinatura.</p>
+          <div class="tags"><span class="tag">Voyager API</span><span class="tag">IA</span><span class="tag">ATS</span></div>
+          <a class="card-link" href="https://chromewebstore.google.com/detail/linkedin-cv-generator/jndjcihjnekmaphbpepoddmbpddkfflh" target="_blank" rel="noopener">Ver na Chrome Web Store →</a>
+          <div class="luz" aria-hidden="true"></div>
+        </div>
+        <div class="ext-shot-col">
+          <img class="card-shot" src="assets/ext-linkedin-cv.webp" alt="" loading="lazy">
+        </div>
       </div>
     </div>
   </div>
@@ -308,7 +319,6 @@
   <div class="container">
     <span class="eyebrow">Engineering</span>
     <h2 class="section-title">Conhecimento, não só projetos.</h2>
-    <p class="section-subtitle">Seção voltada para recrutadores técnicos.</p>
 
     <div class="grid grid-3">
       <div class="engineering-topic">
@@ -396,6 +406,23 @@
   <div class="container">
     <span class="eyebrow">Contato</span>
     <h2 class="section-title">Vamos conversar.</h2>
+    <div class="contact-form-wrap">
+      <form class="contact-form" id="contact-form">
+        <div class="form-field">
+          <label for="contact-nome">Nome <span aria-hidden="true">*</span></label>
+          <input type="text" id="contact-nome" name="nome" required>
+        </div>
+        <div class="form-field">
+          <label for="contact-email">E-mail <span aria-hidden="true">*</span></label>
+          <input type="email" id="contact-email" name="email" required>
+        </div>
+        <div class="form-field">
+          <label for="contact-mensagem">Mensagem <span aria-hidden="true">*</span></label>
+          <textarea id="contact-mensagem" name="mensagem" required></textarea>
+        </div>
+        <button type="submit" class="contact-submit">Enviar mensagem</button>
+      </form>
+    </div>
     <div class="contact-links">
       <a href="https://www.linkedin.com/in/davidson-silva/" target="_blank" rel="noopener">LinkedIn</a>
       <a href="https://github.com/davidsonsilva/" target="_blank" rel="noopener">GitHub</a>
@@ -413,7 +440,7 @@
       <a href="#projects">Projetos</a>
       <a href="#contact">Contato</a>
     </nav>
-    <span>Construído com HTML/CSS/JS — mockup v1.0</span>
+    <span>Construído com HTML/CSS/JS — mockup v1.1</span>
   </div>
 </footer>
 
