@@ -34,6 +34,10 @@
 <!-- HERO -->
 <header class="hero" id="hero">
   <div class="hero-sticky">
+    <!-- Vídeo ativo por padrão. Para voltar à animação de blocos: remova/comente o <video> abaixo e apague "display:none" de .hero-canvas em css/hero.css -->
+    <video class="hero-video" autoplay muted playsinline aria-hidden="true">
+      <source src="assets/nova-hero.mp4" type="video/mp4">
+    </video>
     <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
     <div class="hero-scrim"></div>
     <div class="hero-scene">
@@ -181,7 +185,7 @@
     <h2 class="section-title">Cada projeto conta uma história completa.</h2>
     <p class="section-subtitle">Da motivação aos resultados: contexto, desafio e o que foi entregue.</p>
 
-    <div class="grid grid-3">
+    <div class="grid grid-2">
       <div class="card project-card">
         <img class="project-thumb" src="assets/project-bees.webp" width="800" height="447"
              alt="Ilustração 3D da operação BEES: caminhão de entrega AB InBev, mercadinho e painéis de gestão de entregas e estoque" loading="lazy">
@@ -205,6 +209,15 @@
         <p>Dois módulos estratégicos do Super App do Banco Inter: o marketplace nativo Inter Shop e o módulo de Câmbio com integração financeira de alta segurança.</p>
         <p>Implementação e conclusão técnica dos fluxos, com refatoração e componentização de UI para sustentar milhões de acessos diários.</p>
         <div class="tags"><span class="tag">Kotlin</span><span class="tag">Fintech</span><span class="tag">E-commerce</span></div>
+      </div>
+      <div class="card project-card">
+        <img class="project-thumb" src="assets/project-nexus.webp" width="800" height="447"
+             alt="Home do site da Nexus Treinamentos com o título Formamos speakers que geram impacto e um palestrante diante de uma plateia" loading="lazy">
+        <h3>Nexus Treinamentos</h3>
+        <p>Site institucional de uma empresa que prepara médicos para palestrar na indústria farmacêutica, com clientes como Sanofi, J&amp;J e Sun Pharma.</p>
+        <p>Do Figma ao ar: tema WordPress de blocos feito à mão, home com 10 seções e 9 perfis de especialistas que o próprio cliente edita pelo painel, diagramas em código, LGPD e versão mobile fiel ao layout.</p>
+        <div class="tags"><span class="tag">WordPress</span><span class="tag">Figma → Código</span><span class="tag">Freelance</span></div>
+        <a class="card-link" href="https://nexustreinamentos.com.br" target="_blank" rel="noopener">Ver site →</a>
       </div>
     </div>
   </div>
@@ -240,6 +253,20 @@
         </div>
         <div class="ext-shot-col">
           <img class="card-shot" src="assets/ext-linkedin-cv.webp" alt="" loading="lazy">
+        </div>
+      </div>
+      <div class="card project-card ext-card ext-dio-focus">
+        <div class="ext-text-col">
+          <h3>DIO Focus Player</h3>
+          <p>Extensão que transforma vídeo-aulas em modo foco: divide a tela entre o vídeo e o material de apoio, com modo foco ativo, ocultação de cabeçalho, barra de progresso e lista de aulas para reduzir distrações durante o estudo.</p>
+          <p>Extensão open source, não oficial.</p>
+          <div class="tags"><span class="tag">Manifest V3</span><span class="tag">Open Source</span><span class="tag">Produtividade</span></div>
+          <a class="card-link" href="https://github.com/davidsonsilva/DIO-Focus-Player" target="_blank" rel="noopener">Ver no GitHub →</a>
+          <a class="card-link" href="https://chromewebstore.google.com/detail/gehjoklpbkeheebhlngigfkhbpboibfi?utm_source=item-share-cb" target="_blank" rel="noopener">Ver na Chrome Web Store →</a>
+          <div class="luz" aria-hidden="true"></div>
+        </div>
+        <div class="ext-shot-col">
+          <img class="card-shot" src="assets/ext-dio-focus-player.webp" alt="" loading="lazy">
         </div>
       </div>
     </div>
@@ -357,10 +384,25 @@
     <p class="section-subtitle">GitHub, contribuições, bibliotecas, templates e frameworks.</p>
     <div class="grid grid-3">
       <div class="card project-card">
+        <img class="project-thumb" src="assets/oss-ecotrip.webp" alt="" loading="lazy">
         <h3>EcoTrip — Carbon Calculator</h3>
         <p>Calculadora de pegada de CO₂ para viagens: compara as emissões entre modais de transporte com rotas traçadas em mapa interativo. Projeto full stack do artigo publicado na DIO.</p>
         <div class="tags"><span class="tag">Python</span><span class="tag">Flask</span><span class="tag">Leaflet.js</span></div>
         <a class="card-link" href="https://github.com/davidsonsilva/carbon-calculator" target="_blank" rel="noopener">Ver no GitHub →</a>
+      </div>
+      <div class="card project-card">
+        <img class="project-thumb" src="assets/oss-card-glow-project.gif" alt="" loading="lazy">
+        <h3>Card Glow Project</h3>
+        <p>Efeito visual de card com glow interativo que segue o cursor do mouse, feito em CSS e JavaScript puro.</p>
+        <div class="tags"><span class="tag">CSS</span><span class="tag">JavaScript</span><span class="tag">UI Effects</span></div>
+        <a class="card-link" href="https://github.com/davidsonsilva/card-glow-project" target="_blank" rel="noopener">Ver no GitHub →</a>
+      </div>
+      <div class="card project-card">
+        <img class="project-thumb" src="assets/oss-trilha-estudos-ia.webp" alt="" loading="lazy">
+        <h3>Trilha de Estudos para IA</h3>
+        <p>Trilha de estudos organizada com recursos, conceitos e projetos práticos para aprender Inteligência Artificial do zero.</p>
+        <div class="tags"><span class="tag">IA</span><span class="tag">Estudos</span><span class="tag">Roadmap</span></div>
+        <a class="card-link" href="https://github.com/davidsonsilva/trilha-estudos-ia" target="_blank" rel="noopener">Ver no GitHub →</a>
       </div>
     </div>
   </div>
@@ -373,29 +415,52 @@
     <h2 class="section-title">Conteúdo técnico.</h2>
     <div class="grid grid-3">
       <div class="card article-card">
-        <span class="eyebrow">Agentes de IA</span>
-        <h3>Desmistificando Agentes de IA: do conceito à prática multiagente</h3>
-        <a class="card-link" href="https://web.dio.me/articles/desmistificando-agentes-de-ia-do-conceito-a-pratica-multiagente-fb2da50e1435" target="_blank" rel="noopener">Ler na DIO →</a>
+        <img class="article-thumb" src="assets/articles/artigo8-capa.jpg" alt="Fraud Sentinel">
+        <span class="eyebrow">Machine Learning</span>
+        <h3>Fraud Sentinel: detecção de fraudes com Machine Learning, Deep Learning e análise de anomalias</h3>
+        <a class="card-link" href="articles/fraud-sentinel-deteccao-fraudes-cartao.html">Ler artigo →</a>
       </div>
       <div class="card article-card">
+        <img class="article-thumb" src="assets/articles/artigo1-capa.jpg" alt="Desmistificando Agentes de IA">
         <span class="eyebrow">Agentes de IA</span>
-        <h3>A revolução dos Agentes de IA e a arquitetura agêntica do Claude</h3>
-        <a class="card-link" href="https://web.dio.me/articles/a-revolucao-dos-agentes-de-ia-e-a-arquitetura-agentica-do-claude-0521863565cd" target="_blank" rel="noopener">Ler na DIO →</a>
+        <h3>Desmistificando Agentes de IA: Do Conceito à Prática Multiagente</h3>
+        <a class="card-link" href="articles/agentes-de-ia-multiagente.html">Ler artigo →</a>
       </div>
       <div class="card article-card">
+        <img class="article-thumb" src="assets/articles/artigo2-capa.jpg" alt="O Caso T9 no Projeto Jarvis">
+        <span class="eyebrow">Engenharia de Software</span>
+        <h3>Quando a IA encontra a Engenharia de Software de alto nível: o Caso T9 no Projeto Jarvis</h3>
+        <a class="card-link" href="articles/jarvis-t9-engenharia-software.html">Ler artigo →</a>
+      </div>
+      <div class="card article-card">
+        <img class="article-thumb" src="assets/articles/artigo3-capa.jpg" alt="LinkedIn CV Generator">
         <span class="eyebrow">Chrome Extension</span>
         <h3>Como construí uma extensão Chrome que transforma seu LinkedIn num currículo ATS em segundos</h3>
-        <a class="card-link" href="https://web.dio.me/articles/como-construi-uma-extensao-chrome-que-transforma-seu-linkedin-num-curriculo-ats-em-segundos-9db9429f63e9" target="_blank" rel="noopener">Ler na DIO →</a>
+        <a class="card-link" href="articles/linkedin-cv-ats-chrome-extension.html">Ler artigo →</a>
       </div>
       <div class="card article-card">
+        <img class="article-thumb" src="assets/articles/artigo4-capa.jpg" alt="NotebookLM Manager">
         <span class="eyebrow">Produtividade</span>
         <h3>O NotebookLM é incrível, mas gerenciar dezenas de fontes pode virar um caos</h3>
-        <a class="card-link" href="https://web.dio.me/articles/o-notebooklm-e-incrivel-mas-gerenciar-dezenas-de-fontes-pode-virar-um-caos-0528bd69e200" target="_blank" rel="noopener">Ler na DIO →</a>
+        <a class="card-link" href="articles/notebooklm-manager.html">Ler artigo →</a>
       </div>
       <div class="card article-card">
+        <img class="article-thumb" src="assets/articles/artigo5-capa.jpg" alt="EcoTrip — calculadora de CO2">
         <span class="eyebrow">Full Stack</span>
-        <h3>EcoTrip: como construí uma calculadora de CO₂ com Python, Flask e Leaflet.js</h3>
-        <a class="card-link" href="https://web.dio.me/articles/ecotrip-como-construi-uma-calculadora-de-co2-com-python-flask-e-leafletjs-09c23bcafa6e" target="_blank" rel="noopener">Ler na DIO →</a>
+        <h3>EcoTrip: Como Construí uma Calculadora de CO₂ com Python, Flask e Leaflet.js</h3>
+        <a class="card-link" href="articles/ecotrip-calculadora-co2.html">Ler artigo →</a>
+      </div>
+      <div class="card article-card">
+        <img class="article-thumb" src="assets/articles/artigo6-capa.jpg" alt="Arquitetura Agêntica do Claude">
+        <span class="eyebrow">Agentes de IA</span>
+        <h3>A Revolução dos Agentes de IA e a Arquitetura Agêntica do Claude</h3>
+        <a class="card-link" href="articles/arquitetura-agentica-claude.html">Ler artigo →</a>
+      </div>
+      <div class="card article-card">
+        <img class="article-thumb" src="assets/articles/artigo7-capa.jpg" alt="Claude Fable 5 chegou">
+        <span class="eyebrow">IA Generativa</span>
+        <h3>Claude Fable 5 chegou !!!!</h3>
+        <a class="card-link" href="articles/claude-fable-5.html">Ler artigo →</a>
       </div>
     </div>
   </div>

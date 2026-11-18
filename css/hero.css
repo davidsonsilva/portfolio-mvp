@@ -21,14 +21,44 @@
   align-items: center;
 }
 
-/* full-bleed frame canvas */
+/* Vídeo 16:9 usado como background full-bleed. `cover` preenche todo o palco
+   sticky sem distorção; o excedente é recortado igualmente a partir do centro. */
+.hero-video {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+/* V2: o vídeo é controlado pelo scroll e prioriza o topo do enquadramento. */
+.hero-scroll-v2 .hero {
+  height: 320vh;
+}
+
+.hero-scroll-v2 .hero-sticky {
+  height: 100vh;
+}
+
+.hero-scroll-v2 .hero-video {
+  object-position: center top;
+}
+
+.hero-scroll-v2 .hero-copy {
+  opacity: 1;
+}
+
+/* full-bleed frame canvas — mantido no código, oculto enquanto o vídeo estiver ativo */
 .hero-canvas {
   position: absolute;
   inset: 0;
   z-index: 0;
   width: 100%;
   height: 100%;
-  display: block;
+  display: none;
 }
 
 /* blend the canvas bottom edge into the hero background (stage < viewport) */

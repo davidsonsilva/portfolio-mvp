@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fraud Sentinel: detecção de fraudes com Machine Learning, Deep Learning e análise de anomalias — Davidson Silva</title>
+<meta name="description" content="Como desenvolvi um sistema ponta a ponta para comparar dez modelos de detecção de fraude, tratar dados extremamente desbalanceados e disponibilizar previsões por API e dashboard.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/sections.css">
+<link rel="stylesheet" href="../css/article.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../index-v2.html#hero" class="logo-mark">
+      <img src="../assets/vertex-suspenso.svg" alt="Vertex Suspenso — logo Davidson Silva">
+      DAVIDSON SILVA
+    </a>
+    <ul>
+      <li><a href="../index-v2.html#about">Sobre</a></li>
+      <li><a href="../index-v2.html#stack">Stack</a></li>
+      <li><a href="../index-v2.html#experience">Experiência</a></li>
+      <li><a href="../index-v2.html#projects">Projetos</a></li>
+      <li><a href="../index-v2.html#engineering">Engineering</a></li>
+      <li><a href="../index-v2.html#contact">Contato</a></li>
+    </ul>
+  </div>
+</nav>
+
+<img class="article-cover" src="../assets/articles/artigo8-capa.jpg" alt="Representação do Fraud Sentinel protegendo um fluxo de transações e isolando uma anomalia">
+
+<section class="article-body-section">
+  <div class="article-container">
+    <a class="article-back" href="../index-v2.html#articles">← Voltar para Artigos</a>
+
+    <span class="eyebrow">Machine Learning</span>
+    <h1 class="article-title">Fraud Sentinel: Detecção de Fraudes com Machine Learning, Deep Learning e Análise de Anomalias</h1>
+    <div class="article-meta">16/07/2026 · Davidson Silva</div>
+
+    <div class="article-content">
+      <p>Detectar fraudes em cartões de crédito parece, à primeira vista, um problema comum de classificação: receber uma transação e decidir se ela é legítima ou fraudulenta. Na prática, o desafio é muito mais interessante. Quando apenas uma fração mínima dos registros pertence à classe que realmente importa, um modelo pode alcançar mais de 99% de acurácia sem detectar uma única fraude.</p>
+
+      <p>Foi a partir desse cenário que desenvolvi o <strong>Fraud Sentinel</strong>, um sistema ponta a ponta para detecção de anomalias e fraudes em transações de cartão de crédito. O projeto combina engenharia de dados, machine learning supervisionado, métodos de detecção de novidade, deep learning, API REST, dashboard interativo e relatórios automáticos.</p>
+
+      <a class="btn btn-secondary" href="https://github.com/davidsonsilva/desafio-dio-fraudes-cartao-credito" target="_blank" rel="noopener">Repositório no GitHub →</a>
+
+      <h2>O problema: encontrar 492 fraudes em quase 285 mil transações</h2>
+      <p>O projeto utiliza o dataset público <a href="https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud" target="_blank" rel="noopener">Credit Card Fraud Detection</a>, composto por <strong>284.807 transações</strong>, das quais somente <strong>492 são fraudes</strong>. Isso representa aproximadamente <strong>0,173%</strong> do total.</p>
+
+      <p>Esse desbalanceamento muda completamente a forma de desenvolver e avaliar a solução. A acurácia deixa de ser uma métrica confiável, porque a classe majoritária domina o resultado. Por isso, defini como indicadores principais:</p>
+      <ul>
+        <li><strong>PR-AUC</strong>, para medir a qualidade do ranking em uma classe positiva rara;</li>
+        <li><strong>recall</strong>, para observar quantas fraudes foram efetivamente detectadas;</li>
+        <li><strong>precisão</strong>, para controlar o volume de falsos alertas;</li>
+        <li><strong>F1</strong>, para equilibrar precisão e recall;</li>
+        <li><strong>matriz de confusão</strong>, para entender o impacto operacional das decisões.</li>
+      </ul>
+
+      <p>Mais do que treinar um classificador, o objetivo foi construir um processo reproduzível e auditável, capaz de comparar abordagens diferentes sob o mesmo contrato de dados.</p>
+
+      <h2>Uma arquitetura ponta a ponta</h2>
+      <p>Estruturei o sistema para que treinamento e inferência compartilhassem exatamente as mesmas transformações. O fluxo começa com a validação do dataset, passa pela divisão estratificada entre treino e teste, cria novas variáveis, aplica escalonamento e treina dez modelos.</p>
+
+      <p>O melhor modelo é selecionado com base em PR-AUC e F1. Em seguida, o pipeline salva um artefato versionado contendo:</p>
+      <ul>
+        <li>o modelo vencedor;</li>
+        <li>a engenharia de features ajustada;</li>
+        <li>o scaler utilizado;</li>
+        <li>o limiar de decisão;</li>
+        <li>as colunas esperadas na entrada;</li>
+        <li>as métricas dos dez modelos;</li>
+        <li>informações sobre o dataset e a versão do artefato.</li>
+      </ul>
+
+      <p>Esse mesmo arquivo é consumido pela linha de comando, pela API FastAPI e pelo dashboard Streamlit. Assim, não existem três implementações diferentes da lógica de previsão.</p>
+
+      <h2>Engenharia de mais de 100 features</h2>
+      <p>As transações originais possuem <code>Time</code>, <code>Amount</code> e 28 variáveis anonimizadas resultantes de PCA. A partir dessas entradas, implementei mais de 100 features derivadas.</p>
+
+      <p>Entre as principais transformações estão:</p>
+      <ul>
+        <li>representação cíclica do horário por seno e cosseno;</li>
+        <li>identificação do período noturno;</li>
+        <li>transformações logarítmica e quadrática do valor;</li>
+        <li>análise de centavos e valores arredondados;</li>
+        <li>interações entre valor e variáveis PCA;</li>
+        <li>módulo e quadrado de <code>V1</code> a <code>V10</code>;</li>
+        <li>interações par a par entre as primeiras variáveis PCA;</li>
+        <li>média, desvio-padrão, máximo absoluto e norma L2 das 28 componentes.</li>
+      </ul>
+
+      <p>Depois da engenharia de features, uso o <code>RobustScaler</code>, que é menos sensível a valores extremos do que uma padronização convencional.</p>
+
+      <p>Um cuidado importante foi ajustar todas as transformações somente com o conjunto de treino. Dessa forma, informações do teste não vazam para o treinamento.</p>
+
+      <h2>Dez modelos, três estratégias de desbalanceamento</h2>
+      <p>Em vez de depender de um único algoritmo, construí um catálogo com dez abordagens supervisionadas e não supervisionadas:</p>
+      <ol>
+        <li>Regressão Logística;</li>
+        <li>Random Forest;</li>
+        <li>Extra Trees;</li>
+        <li>HistGradientBoosting;</li>
+        <li>XGBoost;</li>
+        <li>rede neural TensorFlow/Keras;</li>
+        <li>Isolation Forest;</li>
+        <li>Local Outlier Factor;</li>
+        <li>One-Class SVM;</li>
+        <li>PCA por erro de reconstrução.</li>
+      </ol>
+
+      <p>O tratamento do desbalanceamento varia conforme o tipo de estimador.</p>
+
+      <p>Os modelos clássicos do scikit-learn utilizam <strong>SMOTE</strong>, aplicado somente ao conjunto de treino. O XGBoost recebe <code>scale_pos_weight</code>, calculado a partir da proporção entre classes. A rede neural Keras é treinada com class weights e early stopping. Já os modelos de novidade aprendem apenas com transações normais.</p>
+
+      <p>Essa separação evita uma prática problemática: aplicar simultaneamente reamostragem e pesos de classe sem avaliar se as duas correções estão amplificando demais a classe minoritária.</p>
+
+      <h2>Um threshold adaptado ao problema</h2>
+      <p>Classificadores normalmente utilizam 0,5 como limiar padrão. Em detecção de fraude, esse valor raramente representa o melhor equilíbrio operacional.</p>
+
+      <p>No Fraud Sentinel, cada modelo gera um score contínuo. A partir da curva precision-recall, o sistema procura o threshold que maximiza F1 entre os pontos que atendem a um recall mínimo configurável. Quando a restrição não pode ser atingida, o melhor F1 disponível é utilizado.</p>
+
+      <p>Com isso, o limiar deixa de ser uma constante arbitrária e passa a fazer parte do processo de calibração.</p>
+
+      <h2>Da experimentação para uma aplicação utilizável</h2>
+      <p>Quis evitar que o resultado terminasse apenas em um notebook. Por isso, disponibilizei diferentes formas de utilizar o modelo.</p>
+
+      <h3>Dashboard com Streamlit</h3>
+      <p>O dashboard apresenta o modelo selecionado, a quantidade de features, o limiar e o número de fraudes utilizadas no treinamento. Também permite enviar um CSV, classificar várias transações, ordenar os maiores riscos e exportar os resultados.</p>
+
+      <img src="https://raw.githubusercontent.com/davidsonsilva/desafio-dio-fraudes-cartao-credito/main/docs/images/resultado-treinamento-fraud-sentinel.png" alt="Dashboard do Fraud Sentinel após o treinamento demonstrativo">
+
+      <p>Na execução demonstrativa registrada acima, a regressão logística foi selecionada entre os dez modelos, com <strong>111 features</strong> e <strong>50 exemplos fraudulentos sintéticos</strong>. Esses números validam a integração técnica, mas não devem ser interpretados como desempenho final no dataset real.</p>
+
+      <h3>API REST com FastAPI</h3>
+      <p>A API utiliza Pydantic para validar as 30 variáveis de entrada e oferece endpoints para:</p>
+      <ul>
+        <li>verificar a saúde do serviço;</li>
+        <li>consultar informações do modelo;</li>
+        <li>classificar uma transação;</li>
+        <li>classificar lotes de até mil transações;</li>
+        <li>registrar feedback confirmado.</li>
+      </ul>
+
+      <p>A documentação OpenAPI é gerada automaticamente e pode ser testada pelo Swagger UI.</p>
+
+      <h3>Relatórios em PDF</h3>
+      <p>O projeto também gera um relatório dinâmico com a comparação dos modelos, métricas, threshold e informações do treinamento. Além dele, produzi um relatório técnico versionado com a arquitetura e as decisões de desenvolvimento.</p>
+
+      <h2>Autoaprendizado sem perder rastreabilidade</h2>
+      <p>Um sistema de fraude precisa evoluir quando surgem novos padrões, mas atualizar o modelo silenciosamente após cada feedback seria arriscado.</p>
+
+      <p>Por isso, o endpoint de feedback apenas registra transações confirmadas em um arquivo auditável. Esses exemplos são incorporados ao próximo ciclo de treinamento com o dataset real. O modelo ativo continua imutável até que um novo treinamento seja executado e validado.</p>
+
+      <p>Essa abordagem é menos automática, mas muito mais segura e explicável.</p>
+
+      <h2>O que aprendi com o projeto</h2>
+      <p>O principal aprendizado foi que trabalhar com dados desbalanceados exige decisões em várias camadas. Não basta adicionar SMOTE e continuar usando acurácia como critério.</p>
+
+      <p>Foi necessário pensar em:</p>
+      <ul>
+        <li>métricas coerentes com a raridade da classe positiva;</li>
+        <li>prevenção de vazamento de dados;</li>
+        <li>estratégias específicas para cada família de modelo;</li>
+        <li>calibração do limiar;</li>
+        <li>custo de falsos positivos e falsos negativos;</li>
+        <li>compartilhamento consistente das transformações;</li>
+        <li>persistência e versionamento do artefato;</li>
+        <li>separação entre feedback coletado e modelo publicado.</li>
+      </ul>
+
+      <p>Também ficou evidente o valor de transformar um experimento de data science em um produto verificável. A API, o dashboard, os testes e os relatórios tornam o projeto mais fácil de demonstrar, revisar e evoluir.</p>
+
+      <h2>Limitações e próximos passos</h2>
+      <p>O Fraud Sentinel é um projeto educacional e não uma solução pronta para operar decisões financeiras reais.</p>
+
+      <p>Entre as principais limitações estão:</p>
+      <ul>
+        <li>as variáveis PCA são anonimizadas, o que restringe explicações semânticas;</li>
+        <li>a demonstração utiliza uma divisão estratificada aleatória, enquanto produção deveria considerar validação temporal;</li>
+        <li>ainda não existe monitoramento automático de data drift e concept drift;</li>
+        <li>o feedback precisaria de autenticação, autorização e revisão humana;</li>
+        <li>latência, throughput e custo precisariam ser medidos no ambiente de implantação.</li>
+      </ul>
+
+      <p>Como evolução, pretendo explorar explicabilidade com SHAP, rastreamento de experimentos, validação temporal e monitoramento contínuo da distribuição dos scores.</p>
+
+      <h2>Tecnologias utilizadas</h2>
+      <p>O projeto foi desenvolvido com:</p>
+      <ul>
+        <li>Python;</li>
+        <li>pandas e NumPy;</li>
+        <li>scikit-learn e imbalanced-learn;</li>
+        <li>XGBoost;</li>
+        <li>TensorFlow/Keras;</li>
+        <li>FastAPI e Pydantic;</li>
+        <li>Streamlit;</li>
+        <li>ReportLab;</li>
+        <li>pytest e Ruff.</li>
+      </ul>
+
+      <h2>Conclusão</h2>
+      <p>O Fraud Sentinel mostra como um problema clássico de data science pode ser tratado como um sistema completo. O projeto vai da validação dos dados à inferência, passando por engenharia de features, comparação de modelos, calibração, API, interface e documentação.</p>
+
+      <p>Mais do que encontrar o algoritmo com a melhor métrica, o trabalho foi construir uma solução consistente, reproduzível e honesta sobre seus resultados e limitações.</p>
+
+      <p>Se quiser conhecer a implementação, executar o modo demonstrativo ou consultar o relatório técnico, acesse o projeto no GitHub:</p>
+
+      <p><a href="https://github.com/davidsonsilva/desafio-dio-fraudes-cartao-credito" target="_blank" rel="noopener"><strong>github.com/davidsonsilva/desafio-dio-fraudes-cartao-credito</strong></a></p>
+    </div>
+
+    <a class="article-back" href="../index-v2.html#articles">← Voltar para Artigos</a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <span>&copy; 2026 Davidson Silva. Todos os direitos reservados.</span>
+    <nav>
+      <a href="../index-v2.html#about">Sobre</a>
+      <a href="../index-v2.html#projects">Projetos</a>
+      <a href="../index-v2.html#contact">Contato</a>
+    </nav>
+    <span>Construído com HTML/CSS/JS — mockup v2</span>
+  </div>
+</footer>
+
+</body>
+</html>

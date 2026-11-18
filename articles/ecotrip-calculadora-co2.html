@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoTrip: como construí uma calculadora de CO₂ com Python, Flask e Leaflet.js — Davidson Silva</title>
+<meta name="description" content="A jornada de construir a EcoTrip: arquitetura em duas camadas, design system dark inspirado no Reflect.app, mapa interativo com Leaflet.js e testes unitários completos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/sections.css">
+<link rel="stylesheet" href="../css/article.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../index.html#hero" class="logo-mark">
+      <img src="../assets/vertex-suspenso.svg" alt="Vertex Suspenso — logo Davidson Silva">
+      DAVIDSON SILVA
+    </a>
+    <ul>
+      <li><a href="../index.html#about">Sobre</a></li>
+      <li><a href="../index.html#stack">Stack</a></li>
+      <li><a href="../index.html#experience">Experiência</a></li>
+      <li><a href="../index.html#projects">Projetos</a></li>
+      <li><a href="../index.html#engineering">Engineering</a></li>
+      <li><a href="../index.html#contact">Contato</a></li>
+    </ul>
+  </div>
+</nav>
+
+<img class="article-cover" src="../assets/articles/artigo5-capa.jpg" alt="EcoTrip — calculadora de CO2">
+
+<section class="article-body-section">
+  <div class="article-container">
+    <a class="article-back" href="../index.html#articles">← Voltar para Artigos</a>
+
+    <span class="eyebrow">Full Stack</span>
+    <h1 class="article-title">EcoTrip: Como Construí uma Calculadora de CO₂ com Python, Flask e Leaflet.js</h1>
+    <div class="article-meta">27/05/2026 · Davidson Silva</div>
+
+    <div class="article-content">
+      <p>Quando recebi o desafio de criar um projeto de calculadora de carbono, minha primeira reação foi: "mais um projeto CRUD?". Mas ao longo do desenvolvimento, o projeto foi ganhando camadas — um design system completo, um mapa interativo, cards de resultado animados e até um sistema de créditos de carbono. Neste artigo vou contar como foi essa jornada e o que aprendi no caminho.</p>
+
+      <a class="btn btn-secondary" href="https://davidsonsilva.github.io/carbon-calculator/" target="_blank" rel="noopener">Acessar o projeto →</a>
+      <a class="btn btn-secondary" href="https://github.com/davidsonsilva/carbon-calculator" target="_blank" rel="noopener">Repositório no GitHub →</a>
+
+      <h2>O problema</h2>
+      <p>Calcular a emissão de CO₂ de uma viagem parece simples, mas envolve algumas variáveis interessantes:</p>
+      <ul>
+        <li>Fatores de emissão diferentes por modal (carro, ônibus, trem, avião)</li>
+        <li>Perfil do trajeto (urbano, misto, rodovia)</li>
+        <li>Número de passageiros (dividindo a emissão)</li>
+        <li>Para aviões: distinção entre voos curtos e longos</li>
+      </ul>
+
+      <p>A fórmula base é:</p>
+      <pre><code>emissão = fator_modal × distância_km × multiplicador_perfil ÷ passageiros</code></pre>
+
+      <h2>Arquitetura: duas camadas independentes</h2>
+      <p>Uma decisão importante logo no início foi separar a lógica de cálculo da interface. Isso resultou em duas camadas completamente independentes:</p>
+
+      <h3>Camada 1 — Pacote Python (eco_trip/)</h3>
+      <pre><code>EMISSION_FACTORS = {
+    'car':         0.192,  # kg CO2e por passageiro/km
+    'bus':         0.105,
+    'train':       0.041,
+    'plane_short': 0.254,
+    'plane_long':  0.146,
+}
+
+def estimate_emissions(distance_km, mode, profile='mixed', passengers=1):
+    if mode == 'plane':
+        key = 'plane_short' if distance_km &lt; 1500 else 'plane_long'
+    else:
+        key = mode
+
+    factor     = EMISSION_FACTORS[key]
+    multiplier = PROFILE_MULTIPLIER.get(profile, 1.0)
+    total      = factor * distance_km * multiplier
+
+    return {
+        'total_kg_co2e':         round(total, 6),
+        'per_passenger_kg_co2e': round(total / passengers, 6),
+        ...
+    }</code></pre>
+
+      <p>Essa camada tem testes unitários completos e pode ser usada via CLI ou como API REST.</p>
+
+      <h3>Camada 2 — Interface Web (GitHub Pages)</h3>
+      <p>A interface é 100% estática — sem chamadas ao backend. Todo o cálculo roda no browser via JavaScript, o que permite hospedar gratuitamente no GitHub Pages.</p>
+
+      <h2>O design: inspiração no Reflect.app</h2>
+      <img src="../assets/articles/artigo5-inline1.png" alt="Design da EcoTrip inspirado no Reflect.app">
+      <p>O design inicial era baseado em Material Design 3 (tema claro), mas durante o desenvolvimento decidi refatorar para um tema dark inspirado no Reflect.app — minimalista, fundo quase preto, glassmorphism nos cards e tipografia bold.</p>
+
+      <p>Os tokens visuais principais:</p>
+      <pre><code>:root {
+  --bg: #0f0f13;
+  --accent: #7c3aed; /* roxo */
+  --green: #22c55e;
+  --yellow: #f59e0b;
+  --red: #ef4444;
+}
+
+.glass {
+  background: rgba(15,15,19,0.72);
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+}</code></pre>
+
+      <h2>O mapa com Leaflet.js</h2>
+      <img src="../assets/articles/artigo5-inline2.png" alt="Mapa interativo com Leaflet.js">
+      <p>A feature mais interessante foi integrar um mapa interativo como background da página usando Leaflet.js com tiles gratuitos do CartoDB Dark.</p>
+
+      <p>O truque para o mapa funcionar como fundo fixo sem quebrar no scroll:</p>
+      <pre><code>#map {
+  position: fixed; /* fixo no viewport */
+  inset: 0;
+  filter: brightness(0.35) saturate(0.6);
+  z-index: 0;
+}</code></pre>
+
+      <p>Cada modal de transporte tem sua própria cor — e essa cor é usada tanto na borda do card selecionado quanto na linha da rota no mapa:</p>
+      <pre><code>const ALL_MODES = [
+  { emoji: '🚲', name: 'Bicicleta', factor: 0.00, color: '#22c55e' },
+  { emoji: '🚌', name: 'Ônibus',    factor: 0.04, color: '#f59e0b' },
+  { emoji: '🚗', name: 'Carro',     factor: 0.14, color: '#7c3aed' },
+  { emoji: '🚚', name: 'Caminhão',  factor: 0.25, color: '#ef4444' },
+];
+
+// A linha da rota e os marcadores usam a mesma cor do modal selecionado
+routeLine = L.polyline([origem, destino], {
+  color: selectedColor,
+  dashArray: '8 6',
+}).addTo(map);</code></pre>
+
+      <h2>Cards de resultado</h2>
+      <img src="../assets/articles/artigo5-inline3.png" alt="Cards de resultado da EcoTrip">
+      <p>Após o cálculo, três cards aparecem com as informações principais, seguidos de um card de comparação entre modais com barras de progresso:</p>
+      <ul>
+        <li>Card 1 — Rota, distância e modal escolhido</li>
+        <li>Card 2 — CO₂ emitido em kg (destaque visual)</li>
+        <li>Card 3 — Créditos de carbono necessários e custo estimado</li>
+      </ul>
+
+      <p>O card de créditos inclui um botão que abre um modal com o passo a passo para compensar as emissões, com links para plataformas certificadas como Verra, Gold Standard e MOSS Earth (brasileira, projetos na Amazônia).</p>
+
+      <h2>Testes</h2>
+      <p>O pacote Python tem cobertura completa de testes unitários:</p>
+      <pre><code>def test_plane_short_vs_long(self):
+    r_short = estimate_emissions(500, 'plane', 'mixed', 1)
+    r_long = estimate_emissions(2000, 'plane', 'mixed', 1)
+    self.assertAlmostEqual(r_short['total_kg_co2e'], 0.254 * 500, places=6)
+    self.assertAlmostEqual(r_long['total_kg_co2e'], 0.146 * 2000, places=6)</code></pre>
+
+      <pre><code>python -m unittest discover -s tests -v
+# Ran 12 tests in 0.072s — OK</code></pre>
+
+      <h2>Deploy no GitHub Pages</h2>
+      <p>Como a interface é 100% client-side, o deploy é trivial:</p>
+      <ol>
+        <li>Copiar o HTML com paths relativos para /docs</li>
+        <li>No GitHub: Settings → Pages → Source: main / /docs</li>
+        <li>Pronto — live em https://usuario.github.io/repo/</li>
+      </ol>
+
+      <h2>O que aprendi</h2>
+      <ul>
+        <li>Separar lógica de apresentação desde o início poupa muito retrabalho</li>
+        <li><code>position: fixed</code> no Leaflet é a solução para mapas como background sem quebrar no scroll</li>
+        <li>CSS custom properties (<code>--mode-color</code>) permitem tematizar componentes por estado de forma elegante</li>
+        <li>GitHub Pages é poderoso para projetos client-side — zero infraestrutura</li>
+      </ul>
+
+      <h2>Próximos passos</h2>
+      <ul>
+        <li>Integrar API de geocodificação para calcular distâncias reais (atualmente simuladas)</li>
+        <li>Rota real via OSRM (gratuito) em vez de linha reta</li>
+        <li>Suporte a múltiplos segmentos de viagem na interface web</li>
+      </ul>
+    </div>
+
+    <a class="article-back" href="../index.html#articles">← Voltar para Artigos</a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <span>&copy; 2026 Davidson Silva. Todos os direitos reservados.</span>
+    <nav>
+      <a href="../index.html#about">Sobre</a>
+      <a href="../index.html#projects">Projetos</a>
+      <a href="../index.html#contact">Contato</a>
+    </nav>
+    <span>Construído com HTML/CSS/JS — mockup v1.1</span>
+  </div>
+</footer>
+
+</body>
+</html>
