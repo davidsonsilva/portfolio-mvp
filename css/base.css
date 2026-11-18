@@ -192,6 +192,31 @@ p.section-subtitle {
   color: var(--brand-accent-axiom);
 }
 
+/* Submenu "Projetos" (issue #1). Mesmo visual do WordPress: escuro como o topo. */
+.site-nav .has-sub { position: relative; }
+.site-nav .sub-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: -16px;
+  min-width: 220px;
+  flex-direction: column;
+  gap: 0;
+  padding: 6px 0;
+  margin-top: 8px;
+  background: #0b0c10;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius);
+  box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.6);
+}
+/* Ponte invisível: o mouse atravessa o vão de 8px sem fechar o submenu. */
+.site-nav .sub-menu::before { content: ""; position: absolute; left: 0; right: 0; top: -9px; height: 9px; }
+.site-nav .has-sub:hover > .sub-menu,
+.site-nav .has-sub:focus-within > .sub-menu { display: flex; }
+.site-nav .sub-menu a { display: block; padding: 10px 16px; color: #f4f4f5; }
+.site-nav .sub-menu li + li a { border-top: 1px solid rgba(255, 255, 255, 0.08); }
+.site-nav .sub-menu a:hover { background: #15171d; color: #8fa4ff; }
+
 /* Grid helpers */
 .grid {
   display: grid;
