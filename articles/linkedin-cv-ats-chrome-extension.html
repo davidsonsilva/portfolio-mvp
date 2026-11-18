@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Como construí uma extensão Chrome que transforma seu LinkedIn num currículo ATS em segundos — Davidson Silva</title>
+<meta name="description" content="WXT, React, TypeScript, Material UI v5 e Clean Architecture: como construí a LinkedIn CV Generator, uma extensão Chrome 100% local para gerar currículos otimizados para ATS.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/sections.css">
+<link rel="stylesheet" href="../css/article.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../index.html#hero" class="logo-mark">
+      <img src="../assets/vertex-suspenso.svg" alt="Vertex Suspenso — logo Davidson Silva">
+      DAVIDSON SILVA
+    </a>
+    <ul>
+      <li><a href="../index.html#about">Sobre</a></li>
+      <li><a href="../index.html#stack">Stack</a></li>
+      <li><a href="../index.html#experience">Experiência</a></li>
+      <li><a href="../index.html#projects">Projetos</a></li>
+      <li><a href="../index.html#engineering">Engineering</a></li>
+      <li><a href="../index.html#contact">Contato</a></li>
+    </ul>
+  </div>
+</nav>
+
+<img class="article-cover" src="../assets/articles/artigo3-capa.jpg" alt="LinkedIn CV Generator — extensão Chrome">
+
+<section class="article-body-section">
+  <div class="article-container">
+    <a class="article-back" href="../index.html#articles">← Voltar para Artigos</a>
+
+    <span class="eyebrow">Chrome Extension</span>
+    <h1 class="article-title">Como construí uma extensão Chrome que transforma seu LinkedIn num currículo ATS em segundos</h1>
+    <div class="article-meta">10/06/2026 · Davidson Silva · WXT · React · TypeScript · Material UI v5 · Clean Architecture · Vitest</div>
+
+    <div class="article-content">
+      <p>Algumas semanas atrás, vi um post aqui no LinkedIn que viralizou. Centenas de pessoas nos comentários pedindo o modelo de currículo ATS que a autora tinha usado como exemplo. Ela não respondeu a ninguém.</p>
+
+      <p>Aquilo ficou na minha cabeça. E virou código.</p>
+
+      <h2>O problema que quis resolver</h2>
+      <p>Sistemas ATS (Applicant Tracking Systems) são softwares usados por empresas para fazer a primeira triagem de currículos automaticamente — antes de qualquer olho humano ver o seu. Um currículo com tabelas, colunas, ícones decorativos ou fontes não-padrão simplesmente falha nessa triagem. O robô não consegue ler.</p>
+
+      <p>O problema: a maioria das pessoas tem todo o seu histórico profissional já organizado no LinkedIn. Mas transformar isso num CV limpo, linear e legível por máquina ainda é um processo manual, chato e propenso a erros.</p>
+
+      <p>A ideia foi simples: ler o perfil diretamente da página do LinkedIn e gerar o CV na hora. 100% local, sem mandar nada para servidor nenhum.</p>
+
+      <h2>A stack escolhida</h2>
+      <h3>WXT + React + TypeScript</h3>
+      <p>O WXT é um framework moderno para desenvolvimento de extensões Chrome/Firefox. Ele resolve uma das maiores dores do desenvolvimento de extensões: o boilerplate do Manifest V3.</p>
+
+      <p>Com WXT você trabalha com uma estrutura de projeto próxima ao Vite, com hot reload nativo durante o desenvolvimento, suporte a TypeScript out-of-the-box e abstração dos entry points da extensão (background, content scripts, side panel).</p>
+
+      <pre><code>// wxt.config.ts
+export default defineConfig({
+  manifest: {
+    name: 'LinkedIn CV Generator',
+    permissions: ['sidePanel', 'storage', 'tabs'],
+    host_permissions: ['https://www.linkedin.com/*'],
+  },
+})</code></pre>
+
+      <h3>Material UI v5 com MD3 tokens</h3>
+      <p>A interface usa MUI v5 com design tokens do Material Design 3 — o mesmo sistema visual do Android moderno. Isso garante consistência visual sem reinventar a roda para uma extensão onde a UI precisa ser compacta e funcional.</p>
+
+      <h3>Clean Architecture</h3>
+      <p>Esse foi o ponto mais importante da arquitetura. A extensão está dividida em quatro camadas:</p>
+
+      <pre><code>src/
+├── domain/          # Entidades e interfaces (Profile, CVSection, JobMatch)
+├── application/     # Use cases (ExtractProfile, GenerateCV, AnalyzeJobMatch)
+├── infrastructure/  # Implementações concretas (LinkedInScraper, PDFExporter)
+└── presentation/    # Componentes React (SidePanel, CVPreview, MatchScore)</code></pre>
+
+      <p>Essa separação tem um benefício direto: o domínio não sabe nada sobre o DOM do LinkedIn. Se o LinkedIn mudar a estrutura HTML (o que acontece com frequência), só a camada de infraestrutura precisa ser atualizada. Os use cases e a UI não são tocados.</p>
+
+      <h2>O coração da extensão: o scraper do LinkedIn</h2>
+      <p>O maior desafio técnico foi extrair dados de forma confiável de uma página que não foi feita para isso.</p>
+
+      <h3>Content Script vs. Side Panel</h3>
+      <p>A extensão usa dois contextos diferentes:</p>
+      <ul>
+        <li><strong>Content Script</strong> — roda no contexto da página do LinkedIn, tem acesso ao DOM</li>
+        <li><strong>Side Panel</strong> — roda em contexto isolado (como um iframe), não tem acesso direto ao DOM</li>
+      </ul>
+
+      <p>A comunicação entre eles usa a API de mensagens do Chrome:</p>
+
+      <pre><code>// Content script — lê o DOM e responde
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  if (message.type === 'EXTRACT_PROFILE') {
+    const profile = LinkedInScraper.extract()
+    sendResponse({ success: true, data: profile })
+  }
+  return true // mantém o canal aberto para resposta assíncrona
+})
+
+// Side panel — solicita a extração
+const response = await chrome.tabs.sendMessage(tabId, {
+  type: 'EXTRACT_PROFILE'
+})</code></pre>
+
+      <h3>Estratégia de scraping</h3>
+      <p>O LinkedIn renderiza conteúdo dinamicamente e usa class names gerados (ex: <code>artdeco-entity-lockup__title</code>). A estratégia adotada foi usar seletores semânticos e atributos de dados em vez de class names voláteis:</p>
+
+      <pre><code>// Frágil — vai quebrar quando o LinkedIn mudar o CSS
+document.querySelector('.pv-text-details__left-panel h1')
+
+// Mais estável — usa estrutura semântica
+document.querySelector('h1[data-anonymize="person-name"]')
+  ?? document.querySelector('section.pv-top-card h1')</code></pre>
+
+      <p>Para seções como experiências e formação, o scraper percorre listas de elementos com múltiplos seletores alternativos em cascata — se o primeiro falhar, tenta o próximo.</p>
+
+      <h3>Cache com chrome.storage</h3>
+      <p>Após a extração, o perfil é salvo localmente:</p>
+
+      <pre><code>await chrome.storage.local.set({
+  cachedProfile: profile,
+  extractedAt: Date.now(),
+})</code></pre>
+
+      <p>Isso evita que o usuário precise reabrir o perfil toda vez. A extensão exibe a data da última extração e oferece um botão "Extrair Novamente" quando o dado está em cache.</p>
+
+      <h2>Geração do currículo</h2>
+      <h3>Template HTML puro</h3>
+      <p>O CV é gerado como HTML estático — sem frameworks, sem dependências. Isso garante que o arquivo exportado seja portátil e abra em qualquer browser.</p>
+
+      <p>A estrutura segue as melhores práticas ATS:</p>
+      <ul>
+        <li>Layout linear de uma coluna</li>
+        <li>Sem tabelas para estruturar o conteúdo</li>
+        <li>Sem imagens decorativas</li>
+        <li>Fonte system-safe (Arial, sem serifa)</li>
+        <li>Hierarquia semântica com &lt;h1&gt;, &lt;h2&gt;, &lt;h3&gt;</li>
+      </ul>
+
+      <pre><code>function generateHTMLResume(profile: Profile, sections: SectionConfig): string {
+  return `
+    &lt;!DOCTYPE html&gt;
+    &lt;html lang="pt-BR"&gt;
+    &lt;head&gt;
+      &lt;meta charset="UTF-8"&gt;
+      &lt;style&gt;${ATS_SAFE_CSS}&lt;/style&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+      &lt;header&gt;
+        &lt;h1&gt;${profile.name}&lt;/h1&gt;
+        &lt;p&gt;${profile.headline}&lt;/p&gt;
+        ${profile.contact ? renderContact(profile.contact) : ''}
+      &lt;/header&gt;
+      ${sections.experiences ? renderExperiences(profile.experiences) : ''}
+      ${sections.education ? renderEducation(profile.education) : ''}
+      ${sections.skills ? renderSkills(profile.skills) : ''}
+      ${sections.certifications ? renderCertifications(profile.certifications) : ''}
+      ${sections.languages ? renderLanguages(profile.languages) : ''}
+    &lt;/body&gt;
+    &lt;/html&gt;
+  `
+}</code></pre>
+
+      <h3>Exportação PDF</h3>
+      <p>O PDF é gerado via <code>window.print()</code> com uma media query <code>@print</code> otimizada — sem bibliotecas externas como jsPDF ou Puppeteer. Simples, leve e funciona em qualquer SO.</p>
+
+      <pre><code>function downloadAsPDF(htmlContent: string) {
+  const printWindow = window.open('', '_blank')
+  printWindow.document.write(htmlContent)
+  printWindow.document.close()
+  printWindow.print()
+}</code></pre>
+
+      <h2>Job Match: compatibilidade com a vaga</h2>
+      <p>Essa foi a feature mais interessante de construir. Quando o usuário está numa página de vaga (linkedin.com/jobs/view/...), a extensão extrai automaticamente a descrição da vaga e compara com o perfil em cache.</p>
+
+      <h3>Algoritmo de matching por keywords</h3>
+      <p>O matching não usa LLM nem API externa. É um algoritmo de interseção de keywords categorizadas:</p>
+
+      <pre><code>function analyzeJobMatch(profile: Profile, jobDescription: string): MatchResult {
+  const jobKeywords = extractKeywords(jobDescription)
+  const profileKeywords = extractKeywords(profileToText(profile))
+
+  const matched = jobKeywords.filter(k => profileKeywords.includes(k))
+  const missing = jobKeywords.filter(k => !profileKeywords.includes(k))
+
+  const score = Math.round((matched.length / jobKeywords.length) * 100)
+
+  return {
+    score,
+    matched,
+    missing,
+    recommendations: generateRecommendations(missing),
+  }
+}</code></pre>
+
+      <p>As keywords são categorizadas por tipo (linguagens, frameworks, ferramentas, soft skills) e as recomendações são geradas com base na categoria da keyword faltante:</p>
+
+      <blockquote>"Destaque sua experiência em linguagens de programação citando kotlin"</blockquote>
+
+      <p>Simples, direto, sem custo de API.</p>
+
+      <h2>Testes com Vitest</h2>
+      <p>A suíte de testes cobre principalmente os use cases e o domínio:</p>
+
+      <pre><code>// Teste do use case de extração
+describe('ExtractProfileUseCase', () => {
+  it('should normalize empty skills to empty array', () => {
+    const rawProfile = { ...mockProfile, skills: null }
+    const result = extractProfileUseCase.execute(rawProfile)
+    expect(result.skills).toEqual([])
+  })
+})</code></pre>
+
+      <p>O scraper em si é testado com fixtures de HTML — snapshots de páginas reais do LinkedIn com dados anonimizados.</p>
+
+      <h2>O que aprendi</h2>
+      <ol>
+        <li><strong>Clean Architecture em extensões Chrome vale a pena</strong> — a separação de camadas salvou várias vezes quando o LinkedIn mudou o HTML e só o scraper precisou ser atualizado.</li>
+        <li><strong>WXT é genuinamente bom</strong> — se você ainda está escrevendo extensões na mão com manifest.json puro, experimente o WXT. O DX é muito superior.</li>
+        <li><strong>Não subestime o scraping defensivo</strong> — o LinkedIn é agressivo em mudar class names. Múltiplos seletores em cascata + testes com fixtures são obrigatórios.</li>
+        <li><strong>PDF via window.print() é subestimado</strong> — para casos de uso simples como um CV, evita uma dependência pesada e funciona perfeitamente.</li>
+      </ol>
+
+      <h2>Instale e teste</h2>
+      <p>A extensão está disponível gratuitamente na Chrome Web Store, sem cadastro, sem API key, sem nenhum dado saindo do seu navegador.</p>
+
+      <a class="btn btn-secondary" href="https://chromewebstore.google.com/detail/linkedin-cv-generator/jndjcihjnekmaphbpepoddmbpddkfflh" target="_blank" rel="noopener">LinkedIn CV Generator — Chrome Web Store →</a>
+    </div>
+
+    <a class="article-back" href="../index.html#articles">← Voltar para Artigos</a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <span>&copy; 2026 Davidson Silva. Todos os direitos reservados.</span>
+    <nav>
+      <a href="../index.html#about">Sobre</a>
+      <a href="../index.html#projects">Projetos</a>
+      <a href="../index.html#contact">Contato</a>
+    </nav>
+    <span>Construído com HTML/CSS/JS — mockup v1.1</span>
+  </div>
+</footer>
+
+</body>
+</html>

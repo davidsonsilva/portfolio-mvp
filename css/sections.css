@@ -129,6 +129,11 @@
   text-decoration: underline;
 }
 
+.project-card .card-link + .card-link,
+.ext-card .card-link + .card-link {
+  margin-top: 8px;
+}
+
 .article-card .card-link {
   display: block;
   margin-top: 12px;
@@ -245,6 +250,16 @@
 /* Articles */
 .article-card {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.article-card .article-thumb {
+  width: calc(100% + 40px);
+  margin: -20px -20px 16px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: var(--radius) var(--radius) 0 0;
 }
 
 .article-card .eyebrow {
